@@ -43,6 +43,9 @@ def generate_create_table(json_data, table_name):
 
     create_table_sql = create_table_sql.rstrip(',\n') + '\n);'
     return create_table_sql
+def main():
+    # Get a list of JSON files in the directory
+    json_files = [f for f in os.listdir(directory) if f.endswith('.json')]
 
 # Get a list of JSON files in the directory
 json_files = [f for f in os.listdir(directory) if f.endswith('.json')]
@@ -59,3 +62,6 @@ with open(output_file, 'w') as outfile:
             outfile.write(create_table_sql + '\n\n')
 
 print(f'CREATE TABLE commands have been written to {output_file}')
+
+if __name__ == "__main__":
+    main()
