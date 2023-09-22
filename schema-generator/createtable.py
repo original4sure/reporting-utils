@@ -2,12 +2,12 @@ import os
 import json
 
 # Directory where your JSON files are located
-directory = '/home/shauryaswami/Documents/o4s-tasks/dsl-schema-main/schemas'
+directory = '/home/shauryaswami/Documents/o4s-tasks/dsl-schema-main/schemas/'
 
 # Output file where the combined SQL commands will be written
-output_file = '/home/shauryaswami/Documents/o4s-tasks/create-tables.sql'
+output_file = '/home/shauryaswami/reporting-utils/schema-generator/create_tables.sql'
 
-def map_datatype(dest_datatype: str):
+def resolve_dest_datatype(dest_datatype: str):
     # Mapping of dest_datatype values to PostgreSQL data types
     datatype_mapping = {
         "string": 'TEXT',
@@ -36,7 +36,7 @@ def generate_create_table(json_data, table_name):
     for item in json_data['table_creation']:
         key = item['dest_column']
         dest_datatype = item['dest_datatype'].lower()  # Convert to lowercase for case-insensitive comparison
-        data_type = map_datatype(dest_datatype)
+        data_type = resolve_dest_datatype(dest_datatype)
         if not data_type:
             raise Exception(f"unhandled type: {dest_datatype}")
         create_table_sql += f'    "{key}" {data_type},\n'
