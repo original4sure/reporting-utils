@@ -1,3 +1,5 @@
+# This script reads JSON files containing schema information, generates JSON schemas
+# based on the content, and saves the schemas to separate text files.
 import json
 import os
 import glob
