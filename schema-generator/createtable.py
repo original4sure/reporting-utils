@@ -29,7 +29,7 @@ def resolve_dest_datatype(dest_datatype: str):
         "map(string, string)": 'ARRAY'
     }
     print(f"getting {dest_datatype.lower()}")
-    return datatype_mapping.get(dest_datatype.lower())  # Default to TEXT if not found
+    return datatype_mapping.get(dest_datatype.lower())  
 
 def generate_create_table(json_data, table_name):
     create_table_sql = f'CREATE TABLE {table_name} (\n'
@@ -43,25 +43,23 @@ def generate_create_table(json_data, table_name):
 
     create_table_sql = create_table_sql.rstrip(',\n') + '\n);'
     return create_table_sql
-def main():
+
+def process_json_files(directory, output_file):
     # Get a list of JSON files in the directory
     json_files = [f for f in os.listdir(directory) if f.endswith('.json')]
 
-# Get a list of JSON files in the directory
-json_files = [f for f in os.listdir(directory) if f.endswith('.json')]
+    # Open the output file for writing
+    with open(output_file, 'w') as outfile:
+        for json_file in json_files:
+            file_path = os.path.join(directory, json_file)
+            table_name = os.path.splitext(json_file)[0]  # Use file name as table name
+            with open(file_path, 'r') as json_data:
+                data = json.load(json_data)
+                create_table_sql = generate_create_table(data, table_name)
+                outfile.write(f'-- Table for {json_file}\n')
+                outfile.write(create_table_sql + '\n\n')
 
-# Open the output file for writing
-with open(output_file, 'w') as outfile:
-    for json_file in json_files:
-        file_path = os.path.join(directory, json_file)
-        table_name = os.path.splitext(json_file)[0]  # Use file name as table name
-        with open(file_path, 'r') as json_data:
-            data = json.load(json_data)
-            create_table_sql = generate_create_table(data, table_name)
-            outfile.write(f'-- Table for {json_file}\n')
-            outfile.write(create_table_sql + '\n\n')
-
-print(f'CREATE TABLE commands have been written to {output_file}')
+    print(f'CREATE TABLE commands have been written to {output_file}')
 
 if __name__ == "__main__":
-    main()
+    process_json_files(directory, output_file)
